@@ -8,7 +8,7 @@ import java.util.Queue;
 
 
 /**
- * Do A* traversal. Will return shortest path.
+ * Do A* traversal. Will return shortest path. Use Manhattan distance as a heuristic.
  */
 final class AstarTraversal implements TraversalStrategy {
 
