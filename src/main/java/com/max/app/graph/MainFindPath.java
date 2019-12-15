@@ -19,7 +19,7 @@ public final class MainFindPath {
 
         int[][] data = {
                 {1, 1, 1, 1, 1, 1},
-                {0, 0, 1, 0, 0, 0},
+                {0, 0, 1, 0, 0, 1},
                 {1, 1, 1, 1, 1, 1},
                 {1, 0, 0, 0, 0, 1},
                 {1, 1, 1, 1, 1, 1}
@@ -27,7 +27,7 @@ public final class MainFindPath {
 
         Maze map = new Maze(data);
         Location start = new Location(0, 0);
-        Location end = new Location(4, 5);
+        Location end = new Location(0, 5);
 
         Optional<List<Location>> path = findPath(map, start, end, new AstarTraversal());
 

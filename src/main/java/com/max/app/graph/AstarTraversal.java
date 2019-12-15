@@ -2,7 +2,6 @@ package com.max.app.graph;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -63,6 +62,11 @@ final class AstarTraversal implements TraversalStrategy {
         @Override
         public int compareTo(LocationWithDistance other) {
             return Integer.compare(realDistance + heuristicDistance, other.realDistance + other.heuristicDistance);
+        }
+
+        @Override
+        public String toString() {
+            return location + ", distance = " + realDistance + " + " + heuristicDistance;
         }
     }
 }
