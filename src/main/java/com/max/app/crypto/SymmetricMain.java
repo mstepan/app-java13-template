@@ -30,7 +30,7 @@ public final class SymmetricMain {
         LOG.info("base text: {}", text);
         byte[] encryptedData = cipher.doFinal(text.getBytes());
 
-        LOG.info("encrypted text: {}", toHex(encryptedData));
+        LOG.info("encrypted text: {}", CryptoUtils.toHex(encryptedData));
 
         cipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
         String decryptedText = new String(cipher.doFinal(encryptedData));
@@ -40,50 +40,28 @@ public final class SymmetricMain {
         LOG.info("SymmetricMain done. java version {}", System.getProperty("java.version"));
     }
 
-    private static IvParameterSpec createInitializationVector(){
+    private static IvParameterSpec createInitializationVector() {
         try {
             SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
             byte[] initializationVector = new byte[16];
             random.nextBytes(initializationVector);
             return new IvParameterSpec(initializationVector);
         }
-        catch(NoSuchAlgorithmException ex){
+        catch (NoSuchAlgorithmException ex) {
             throw new IllegalStateException(ex);
         }
     }
 
-    private static SecretKey generateKey(){
+    private static SecretKey generateKey() {
         try {
             KeyGenerator keyGen = KeyGenerator.getInstance("AES");
             keyGen.init(192);
 
             return keyGen.generateKey();
         }
-        catch(NoSuchAlgorithmException ex){
+        catch (NoSuchAlgorithmException ex) {
             throw new IllegalStateException(ex);
         }
-    }
-
-    private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-
-    private static final int HEX_DIGIT_MASK = 0x0F;
-
-    private static String toHex(byte[] data) {
-        StringBuilder buf = new StringBuilder(2 * data.length + (data.length / 4) + 1);
-
-        for (int i = 0; i < data.length; ++i) {
-
-//            if (i != 0 && (i % 4) == 0) {
-//                buf.append(" ");
-//            }
-
-            int singleValue = data[i];
-
-            buf.append(HEX_DIGITS[(singleValue >> 4) & HEX_DIGIT_MASK]);
-            buf.append(HEX_DIGITS[singleValue & HEX_DIGIT_MASK]);
-        }
-
-        return buf.toString();
     }
 
 }
