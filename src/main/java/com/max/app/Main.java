@@ -4,130 +4,120 @@ package com.max.app;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public final class Main {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String[] args) {
+    private static final int BUF_SIZE = 13;
 
-        Random rand = new Random();
+    /**
+     * Reverse file content.
+     */
+    public static void main(String[] args) throws Exception {
 
-        for (int it = 0; it < 10_000_000; ++it) {
+        failIfWrongArgumentsCount(args);
 
-            long x = rand.nextInt(Integer.MAX_VALUE);
-            long y = rand.nextInt(Integer.MAX_VALUE);
+        Path src = Paths.get(args[0]);
+        Path dest = Paths.get(args[1]);
 
-            String expectedRes = String.valueOf(x * y);
+        failIfFileDoesntExist(src);
 
-            int[] xArr = toDecimalArray(x);
-            int[] yArr = toDecimalArray(y);
-            int[] tempRes = mul(xArr, yArr);
+        Files.deleteIfExists(dest);
+        Files.createFile(dest);
 
-            String actualRes = toDecimalString(tempRes);
-
-            if (!expectedRes.equals(actualRes)) {
-                LOG.info("{} * {} = {}", x, y, expectedRes);
-                LOG.info("{} * {} = {}", x, y, actualRes);
-                throw new IllegalStateException("Error occurred, results aren't equal");
-            }
-        }
+        copyContentInReverseOrder(src, dest);
 
         LOG.info("Main done. java version {}", System.getProperty("java.version"));
     }
 
-    private static int[] toDecimalArray(long value) {
+    private static void copyContentInReverseOrder(Path src, Path dest) throws IOException {
+        final byte[] buf = new byte[BUF_SIZE];
 
-        assert value >= 0;
+        long offset = Files.size(src);
 
-        if (value == 0) {
-            return ZERO;
+        try (RandomAccessFile srcFile = new RandomAccessFile(src.toFile(), "r");
+             OutputStream out = Files.newOutputStream(dest)) {
+
+            while (offset != 0) {
+
+                long oldOffset = offset;
+                offset = Math.max(0, offset - BUF_SIZE);
+
+                srcFile.seek(offset);
+
+                int bytesToReadCount = (int) (oldOffset - offset);
+                int readBytes = srcFile.read(buf, 0, bytesToReadCount);
+
+//                String str = new String(toCharArray(buf, readBytes));
+
+                reverseInPlace(buf, readBytes);
+
+//                String reverted = new String(toCharArray(buf, readBytes));
+
+                out.write(buf, 0, readBytes);
+            }
         }
+    }
 
-        List<Integer> data = new ArrayList<>();
-
-        long x = value;
-
-        while (x != 0) {
-            data.add((int) (x % 10));
-            x /= 10;
+    private static void failIfWrongArgumentsCount(String[] args) {
+        assert args != null : "null 'args' array passed";
+        if (args.length != 2) {
+            throw new IllegalArgumentException("Specify 2 parameters");
         }
+    }
 
-        int[] res = new int[data.size()];
-
-        for (int i = 0; i < res.length; ++i) {
-            res[i] = data.get(i);
+    private static void failIfFileDoesntExist(Path path) {
+        if (!Files.exists(path)) {
+            throw new IllegalStateException("File for reverse doesn't exist" + path.toAbsolutePath().toString());
         }
+    }
 
+    private static char[] toCharArray(byte[] data, int readBytes) {
+        char[] res = new char[readBytes];
+
+        for (int i = 0; i < readBytes; ++i) {
+            res[i] = (char) data[i];
+        }
         return res;
     }
 
-    private static final int[] ZERO = {0};
+    private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
-    /**
-     * Standard multiplication method with quadratic complexity.
-     * time: O(N^2), space: O(N)
-     */
-    private static int[] mul(int[] x, int[] y) {
+    private static String toHexString(byte[] data) {
+        StringBuilder res = new StringBuilder(data.length);
 
-        if (isZero(x) || isZero(y)) {
-            return ZERO;
+        for (byte singleByte : data) {
+
+            int normalized = singleByte & 0xFF;
+
+            res.append(HEX_DIGITS[normalized >> 4]);
+            res.append(HEX_DIGITS[normalized & 0x0F]);
         }
-
-        int[] res = new int[x.length + y.length];
-
-        for (int offset = 0; offset < x.length; ++offset) {
-
-            int digit = x[offset];
-
-            for (int i = 0; i < y.length; ++i) {
-                // store not normalized value here, will be normalized at the end
-                res[offset + i] += digit * y[i];
-            }
-        }
-
-        return normalize(res);
+        return res.toString();
     }
 
-    private static boolean isZero(int[] arr) {
-        return arr.length == 1 && arr[0] == 0;
-    }
+    private static void reverseInPlace(byte[] buf, int size) {
 
-    private static int[] normalize(int[] arr) {
+        assert size <= buf.length  : "size > buf.length, size = " + size + ", buf.length = " + buf.length;
 
-        for (int i = 0; i < arr.length; ++i) {
-            if (arr[i] >= 10) {
-                int carry = arr[i] / 10;
-                arr[i] %= 10;
-                assert i + 1 < arr.length;
-                arr[i + 1] += carry;
-            }
+        int from = 0;
+        int to = size - 1;
+
+        while (from < to) {
+            byte singleByte = buf[from];
+
+            buf[from] = buf[to];
+            buf[to] = singleByte;
+            ++from;
+            --to;
         }
-
-        return removeLeadingZeros(arr);
     }
 
-    private static int[] removeLeadingZeros(int[] arr) {
-        int zerosCount = 0;
-
-        for (int i = arr.length - 1; i >= 0 && arr[i] == 0; --i) {
-            ++zerosCount;
-        }
-
-        return Arrays.copyOf(arr, arr.length - zerosCount);
-    }
-
-    private static String toDecimalString(int[] arr) {
-        StringBuilder buf = new StringBuilder(arr.length);
-
-        for (int i = arr.length - 1; i >= 0; --i) {
-            buf.append(arr[i]);
-        }
-
-        return buf.toString();
-    }
 }

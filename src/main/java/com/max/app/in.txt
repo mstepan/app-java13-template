@@ -1,0 +1,15 @@
+The Go runtime, as well as the most recently proposed
+changes to it, draw from previous work to improve scalability
+and performance. In this paper we explore several examples
+of previous research, some that have actively influenced the
+Go runtime, and others that are based on similar guiding
+principles. We propose additional extensions to the runtime
+based on contention aware scheduling techniques. We also
+discuss how such changes would not only leverage the proposed improvements currently in the works, but how they
+can potentially improve the effectiveness of the runtime's
+scheduling algorithm.
+
+
+
+
+
