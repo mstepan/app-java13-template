@@ -7,11 +7,9 @@ public final class Main {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
-
     public static void main(String[] args) throws Exception {
 
-
-        LOG.info("Main done. java version {}", System.getProperty("java.version"));
+        LOG.info("Main done...");
     }
 
 }
