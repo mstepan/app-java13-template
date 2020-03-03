@@ -1,6 +1,5 @@
 package com.max.app.collection;
 
-import com.max.app.MainSerialization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
