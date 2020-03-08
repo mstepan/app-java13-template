@@ -12,5 +12,4 @@ public final class Main {
 
         LOG.info("Main done...");
     }
-
 }
