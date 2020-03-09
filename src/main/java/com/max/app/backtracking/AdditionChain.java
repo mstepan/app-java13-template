@@ -26,6 +26,8 @@ public final class AdditionChain {
 
         List<List<Integer>> res = findChainRec(value);
 
+        assert !res.isEmpty() : "empty result detected";
+
         return res.get(0);
     }
 
@@ -76,7 +78,7 @@ public final class AdditionChain {
 
         MEMORY.put(value, optimalSolutions);
 
-        System.out.printf("FOUND for %d, optimal solutions: %d%n", value, optimalSolutions.size());
+//        System.out.printf("FOUND for %d, optimal solutions: %d%n", value, optimalSolutions.size());
 
         return optimalSolutions;
     }

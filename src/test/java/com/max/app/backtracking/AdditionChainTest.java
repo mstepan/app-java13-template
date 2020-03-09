@@ -19,6 +19,6 @@ public class AdditionChainTest {
 
         // 1, 2, 3, 5, 10, 20, 23, 46, 92, 184, 187, 374
         // 1, 2, 4, 6, 10, 20, 40, 46, 92, 184, 368, 374
-//        assertThat(AdditionChain.findChain(374)).containsExactly(1, 2, 3, 5, 10, 20, 23, 46,  92,  184, 187, 374);
+//        assertThat(AdditionChain.findChain(374)).containsExactly(1, 2, 3, 5, 10, 20, 23, 46, 92, 184, 187, 374);
     }
 }
