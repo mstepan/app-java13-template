@@ -2,9 +2,9 @@ package com.max.app;
 
 public final class Main {
 
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         System.out.printf("java: %s%n", System.getProperty("java.version"));
     }
+
 }
