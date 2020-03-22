@@ -12,24 +12,30 @@ public class CoinChangeTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(CoinChangeTest.class);
 
+    private static final int[] EMPTY = {};
+
     @Test
     public void changeMoney() {
 
         int[] coins = {1, 4, 7, 13, 28, 52, 91, 365};
 
-        for (int amount = 20; amount <= 2000; ++amount) {
-            int[] dynamicRes = CoinChange.changeMoney(amount, coins).orElse(new int[]{});
-            int[] greedyRes = CoinChange.changeMoneyGreedy(amount, coins).orElse(new int[]{});
+        for (int amount = 416; amount <= 420; ++amount) {
+            int[] dynamicRes = CoinChange.changeMoney(amount, coins).orElse(EMPTY);
+            int[] greedyRes = CoinChange.changeMoneyGreedy(amount, coins).orElse(EMPTY);
+            int[] backtrackingRes = CoinChange.changeMoneyBacktracking(amount, coins).orElse(EMPTY);
 
             assertThat(sum(dynamicRes)).isEqualTo(sum(greedyRes));
-            assertThat(dynamicRes.length).isLessThanOrEqualTo(greedyRes.length);
+            assertThat(sum(dynamicRes)).isEqualTo(sum(backtrackingRes));
 
-//            if (dynamicRes.length < greedyRes.length) {
-//                LOG.info("greedy failed for amount = " + amount);
-//                LOG.info("dynamic: " + Arrays.toString(dynamicRes));
-//                LOG.info("greedy: " + Arrays.toString(greedyRes));
-//
-//            }
+            assertThat(dynamicRes.length).isLessThanOrEqualTo(greedyRes.length);
+            assertThat(dynamicRes.length).isEqualTo(backtrackingRes.length);
+
+            if (dynamicRes.length < greedyRes.length) {
+                LOG.info("greedy failed for amount = " + amount);
+                LOG.info("dynamic:      " + Arrays.toString(dynamicRes));
+                LOG.info("greedy:       " + Arrays.toString(greedyRes));
+                LOG.info("backtracking: " + Arrays.toString(backtrackingRes));
+            }
         }
     }
 

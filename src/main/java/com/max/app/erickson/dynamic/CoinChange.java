@@ -16,6 +16,53 @@ public final class CoinChange {
         throw new AssertionError("Can't instantiate utility only class");
     }
 
+    /**
+     * Change money using backtracking recursive algorithm.
+     * <p>
+     * N = coins.length
+     * M = amount
+     * <p>
+     * time: O(2^N)
+     * space: O(M)
+     */
+    public static Optional<int[]> changeMoneyBacktracking(int amount, int[] coins) {
+
+        checkPreconditions(amount, coins);
+
+        List<Integer> bestResult = new ArrayList<>();
+        changeMoneyRec(coins, coins.length - 1, amount, new ArrayList<>(), bestResult);
+
+        return bestResult.isEmpty() ? Optional.empty() : Optional.of(toSortedArray(bestResult));
+    }
+
+    private static void changeMoneyRec(int[] coins, int i, int amount, List<Integer> curSolution, List<Integer> bestResult) {
+
+        if (amount == 0) {
+            if (bestResult.isEmpty() || curSolution.size() < bestResult.size()) {
+                bestResult.clear();
+                bestResult.addAll(curSolution);
+            }
+            return;
+        }
+
+        if (i < 0) {
+            return;
+        }
+
+        if (coins[i] > amount) {
+            // skip coins[i] value
+            changeMoneyRec(coins, i - 1, amount, curSolution, bestResult);
+            return;
+        }
+
+        // skip coins[i] value
+        changeMoneyRec(coins, i - 1, amount, curSolution, bestResult);
+
+        // check with coins[i] value
+        curSolution.add(coins[i]);
+        changeMoneyRec(coins, i, amount - coins[i], curSolution, bestResult);
+        curSolution.remove(curSolution.size() - 1);
+    }
 
     /**
      * Change amount using greedy approach. Not always produce an optimal solution.
@@ -27,8 +74,7 @@ public final class CoinChange {
      * space: up to O(M)
      */
     public static Optional<int[]> changeMoneyGreedy(int amount, int[] coins) {
-        checkArgument(amount >= 0, "Negative 'amount' passed: " + amount);
-        checkArgument(coins != null, "null 'coins' array passed");
+        checkPreconditions(amount, coins);
 
         Arrays.sort(coins);
 
@@ -65,8 +111,7 @@ public final class CoinChange {
      */
     public static Optional<int[]> changeMoney(int amount, int[] coins) {
 
-        checkArgument(amount >= 0, "Negative 'amount' passed: " + amount);
-        checkArgument(coins != null, "null 'coins' array passed");
+        checkPreconditions(amount, coins);
 
         if (amount == 0) {
             return Optional.of(new int[]{});
@@ -102,6 +147,11 @@ public final class CoinChange {
         }
 
         return Optional.of(rebuildSolution(opt, coins));
+    }
+
+    private static void checkPreconditions(int amount, int[] coins) {
+        checkArgument(amount >= 0, "Negative 'amount' passed: " + amount);
+        checkArgument(coins != null, "null 'coins' array passed");
     }
 
     private static int[] rebuildSolution(int[][] opt, int[] coins) {
