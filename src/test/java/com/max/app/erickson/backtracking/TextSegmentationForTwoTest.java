@@ -1,10 +1,10 @@
-package com.max.app.backtracking;
+package com.max.app.erickson.backtracking;
 
 import org.junit.Test;
 
 import java.util.Set;
 
-import static com.max.app.backtracking.TextSegmentationForTwo.canBePartition;
+import static com.max.app.erickson.backtracking.TextSegmentationForTwo.canBePartition;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class TextSegmentationForTwoTest {

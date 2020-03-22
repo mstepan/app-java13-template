@@ -1,8 +1,7 @@
-package com.max.app.backtracking;
+package com.max.app.erickson.backtracking;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
 
@@ -156,4 +155,5 @@ public final class LongestBitonicSubSequence {
 
         return true;
     }
+
 }

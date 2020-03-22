@@ -1,10 +1,10 @@
-package com.max.app.backtracking;
+package com.max.app.erickson.backtracking;
 
 import org.junit.Test;
 
 import java.util.Set;
 
-import static com.max.app.backtracking.TextSegmentation.countSegmentations;
+import static com.max.app.erickson.backtracking.TextSegmentation.countSegmentations;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 

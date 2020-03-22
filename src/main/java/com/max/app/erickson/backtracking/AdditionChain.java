@@ -1,4 +1,4 @@
-package com.max.app.backtracking;
+package com.max.app.erickson.backtracking;
 
 import java.util.ArrayList;
 import java.util.HashMap;

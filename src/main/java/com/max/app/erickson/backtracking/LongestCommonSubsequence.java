@@ -1,4 +1,4 @@
-package com.max.app.backtracking;
+package com.max.app.erickson.backtracking;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
