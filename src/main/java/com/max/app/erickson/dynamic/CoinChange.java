@@ -7,12 +7,25 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+/**
+ * Amount change problem solved using dynamic & greedy approach (greedy is not always optimal).
+ */
 public final class CoinChange {
 
     private CoinChange() {
         throw new AssertionError("Can't instantiate utility only class");
     }
 
+
+    /**
+     * Change amount using greedy approach. Not always produce an optimal solution.
+     * <p>
+     * N = coins.length
+     * M = amount
+     * <p>
+     * time: N*lgN - sort coins, M - find solution for amount, so O(M * N*lgN)
+     * space: up to O(M)
+     */
     public static Optional<int[]> changeMoneyGreedy(int amount, int[] coins) {
         checkArgument(amount >= 0, "Negative 'amount' passed: " + amount);
         checkArgument(coins != null, "null 'coins' array passed");
@@ -22,29 +35,34 @@ public final class CoinChange {
         int index = coins.length - 1;
         int money = amount;
 
-        List<Integer> change = new ArrayList<>();
+        List<Integer> res = new ArrayList<>();
 
         while (money != 0 && index >= 0) {
             if (coins[index] > money) {
                 --index;
             }
             else {
-                change.add(coins[index]);
+                res.add(coins[index]);
                 money -= coins[index];
             }
         }
 
-        int[] res = new int[change.size()];
-
-        for (int i = 0; i < res.length; ++i) {
-            res[i] = change.get(i);
+        if (money != 0) {
+            return Optional.empty();
         }
 
-        Arrays.sort(res);
-
-        return Optional.of(res);
+        return Optional.of(toSortedArray(res));
     }
 
+    /**
+     * Change amount using dynamic programming approach. Always produce an optimal solution.
+     * <p>
+     * N = coins.length
+     * M = amount
+     * <p>
+     * time: O(M*N)
+     * space: O(M*N), can be reduced to O(M)
+     */
     public static Optional<int[]> changeMoney(int amount, int[] coins) {
 
         checkArgument(amount >= 0, "Negative 'amount' passed: " + amount);
@@ -72,16 +90,10 @@ public final class CoinChange {
                 final int cur = coins[row - 1];
                 final int money = col;
 
-                if (cur > money) {
-                    // skip cur
-                    opt[row][col] = opt[row - 1][money];
-                }
-                else {
-                    opt[row][col] = Math.min(
-                            opt[row - 1][money], // without cur
-                            1 + opt[row][money - cur] // with cur
-                    );
-                }
+                opt[row][col] = Math.min(
+                        opt[row - 1][money], // without current element
+                        (cur <= money) ? 1 + opt[row][money - cur] : Integer.MAX_VALUE // with current element if cur <= money
+                );
             }
         }
 
@@ -121,18 +133,21 @@ public final class CoinChange {
 
                 col = newCol;
             }
-
         }
 
-        int[] arr = new int[res.size()];
+        return toSortedArray(res);
+    }
 
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = res.get(i);
+    private static int[] toSortedArray(List<Integer> data) {
+        int[] res = new int[data.size()];
+
+        for (int i = 0; i < res.length; ++i) {
+            res[i] = data.get(i);
         }
 
-        Arrays.sort(arr);
+        Arrays.sort(res);
 
-        return arr;
+        return res;
     }
 
 }
