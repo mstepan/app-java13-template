@@ -16,15 +16,15 @@ public final class MaxSubarray {
      * time: O(N)
      * space: O(1)
      */
-    public static int findMaxSum(int[] arr) {
+    public static long findMaxSum(int[] arr) {
         checkArgument(arr != null, "null 'arr' argument passed");
 
-        int maxSoFar = 0;
-        int maxCur = 0;
+        // use long here to prevent integer overflow
+        long maxSoFar = 0L;
+        long maxCur = 0L;
 
         for (int value : arr) {
-            // TODO: here 'maxCur + value' overflow possible
-            maxCur = Math.max(maxCur + value, 0);
+            maxCur = Math.max(maxCur + value, 0L);
             maxSoFar = Math.max(maxSoFar, maxCur);
         }
 
@@ -37,13 +37,13 @@ public final class MaxSubarray {
      * time: O(N^2), because we need to consider all possible pair of indexes for subarrays.
      * space: O(1)
      */
-    public static int findMaxSumBruteforce(int[] arr) {
+    public static long findMaxSumBruteforce(int[] arr) {
         checkArgument(arr != null, "null 'arr' argument passed");
 
-        int maxSoFar = 0;
+        long maxSoFar = 0L;
 
         for (int i = 0; i < arr.length; ++i) {
-            int curSum = 0;
+            long curSum = 0L;
 
             for (int j = i; j < arr.length; ++j) {
                 curSum += arr[j];
