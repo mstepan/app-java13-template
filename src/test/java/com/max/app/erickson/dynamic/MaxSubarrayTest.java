@@ -10,10 +10,24 @@ import static com.max.app.erickson.dynamic.MaxSubarray.findMaxProduct;
 import static com.max.app.erickson.dynamic.MaxSubarray.findMaxProductBruteforce;
 import static com.max.app.erickson.dynamic.MaxSubarray.findMaxSum;
 import static com.max.app.erickson.dynamic.MaxSubarray.findMaxSumBruteforce;
+import static com.max.app.erickson.dynamic.MaxSubarray.findMaxSumWrapping;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
 public class MaxSubarrayTest {
+
+    @Test
+    public void findMaxSumWrappingNormalCase() {
+        assertThat(findMaxSumWrapping(new int[]{3, -4, 5, 8, 6, -2, -4, -1, 8, -3})).
+                as("'findMaxSumWrapping' returned incorrect result, should be prefix + suffix (aka wrapepd subarray)").
+                isEqualTo(23);
+
+
+        assertThat(findMaxSumWrapping(new int[]{3, -4, -5, 8, 6, -2, -4, -1, 8, -3})).
+                as("'findMaxSumWrapping' returned incorrect result, should be just ordinary subarray").
+                isEqualTo(15);
+    }
+
 
     @Test
     public void findMaxProductNormalCase() {

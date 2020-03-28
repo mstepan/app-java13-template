@@ -91,6 +91,55 @@ public final class MaxSubarray {
     }
 
     /**
+     * Wrapping around: Suppose A is a circular array. In this setting, a
+     * "contiguous subarray" can be either an interval A[i .. j] or a suffix followed
+     * by a prefix A[i .. n]  A[1 .. j]. Describe and analyze an algorithm that
+     * finds a contiguous subarray of A with the largest sum.
+     * <p>
+     * N = arr.length
+     * <p>
+     * time: O(N)
+     * space: O(N), because we need to store 'maxPrefix'
+     */
+    public static long findMaxSumWrapping(int[] arr) {
+        checkArgument(arr != null, "null 'arr' argument passed");
+
+        long maxSum = findMaxSum(arr);
+
+        long[] maxPrefix = calculateMaxPrefix(arr);
+
+        long maxSumWrapping = 0L;
+
+        long suffix = 0L;
+
+        for (int i = arr.length - 1; i > 0; --i) {
+            suffix += arr[i];
+            maxSumWrapping = Math.max(maxSumWrapping, suffix + maxPrefix[i - 1]);
+        }
+
+        return Math.max(maxSum, maxSumWrapping);
+    }
+
+    private static long[] calculateMaxPrefix(int[] arr) {
+        assert arr != null : "null 'arr' parameter passed";
+
+        if (arr.length == 0) {
+            return new long[]{};
+        }
+
+        long[] maxPrefix = new long[arr.length];
+        maxPrefix[0] = arr[0];
+
+        int cur = arr[0];
+
+        for (int i = 1; i < arr.length; ++i) {
+            cur += arr[i];
+            maxPrefix[i] = Math.max(maxPrefix[i - 1], cur);
+        }
+        return maxPrefix;
+    }
+
+    /**
      * Find max subarray sum using dynamic programming approach.
      * <p>
      * N = arr.length
