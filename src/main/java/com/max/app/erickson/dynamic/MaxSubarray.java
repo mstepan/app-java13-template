@@ -1,6 +1,7 @@
 package com.max.app.erickson.dynamic;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -88,6 +89,56 @@ public final class MaxSubarray {
         }
 
         return maxSoFar;
+    }
+
+    /**
+     * Max subarray sum variant: find a contiguous subarray of length at least 'minLength' that has the largest sum.
+     * <p>
+     * N = arr.length
+     * L = minLength value
+     * <p>
+     * time: O(N*L)
+     * space: O(L)
+     */
+    public static long maxSumWithRequiredLength(int[] arr, int minLength) {
+        checkArgument(arr != null, "null 'arr' argument passed");
+        checkArgument(arr.length >= minLength, "arr.length < minLength: %s < %s", arr.length, minLength);
+
+        if (minLength == 0) {
+            // minLength is zero, so no restrictions on length, use standard algorithm
+            return findMaxSum(arr);
+        }
+
+        if (arr.length == minLength) {
+            return Arrays.stream(arr).asLongStream().sum();
+        }
+
+        long maxSoFar = Long.MIN_VALUE;
+        long[] prevPrefix = createEmptyPrefixArray(minLength);
+
+        for (int value : arr) {
+
+            long[] curPrefix = createEmptyPrefixArray(minLength);
+
+            for (int i = 1; i < curPrefix.length; ++i) {
+                curPrefix[i] = Math.max(prevPrefix[i - 1], prevPrefix[i]) + value;
+            }
+
+            maxSoFar = Math.max(maxSoFar, curPrefix[curPrefix.length - 1]);
+
+            prevPrefix = curPrefix;
+        }
+
+        return maxSoFar;
+    }
+
+    private static long[] createEmptyPrefixArray(int minLength) {
+        long[] prefix = new long[minLength + 1];
+        for (int i = 1; i < prefix.length; ++i) {
+            prefix[i] = Integer.MIN_VALUE;
+        }
+
+        return prefix;
     }
 
     /**

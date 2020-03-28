@@ -11,10 +11,47 @@ import static com.max.app.erickson.dynamic.MaxSubarray.findMaxProductBruteforce;
 import static com.max.app.erickson.dynamic.MaxSubarray.findMaxSum;
 import static com.max.app.erickson.dynamic.MaxSubarray.findMaxSumBruteforce;
 import static com.max.app.erickson.dynamic.MaxSubarray.findMaxSumWrapping;
+import static com.max.app.erickson.dynamic.MaxSubarray.maxSumWithRequiredLength;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 
 public class MaxSubarrayTest {
+
+    @Test
+    public void maxSumWithRequiredLengthNormalCase() {
+        int[] arr = {3, -4, -5, 8, 6, -2, -4, -1, 6, -3};
+
+        assertThat(maxSumWithRequiredLength(arr, 7)).isEqualTo(10L);
+        assertThat(maxSumWithRequiredLength(arr, 6)).isEqualTo(13L);
+        assertThat(maxSumWithRequiredLength(arr, 5)).isEqualTo(13L);
+        assertThat(maxSumWithRequiredLength(arr, 4)).isEqualTo(13L);
+        assertThat(maxSumWithRequiredLength(arr, 3)).isEqualTo(13L);
+        assertThat(maxSumWithRequiredLength(arr, 2)).isEqualTo(14L);
+        assertThat(maxSumWithRequiredLength(arr, 1)).isEqualTo(14L);
+    }
+
+    @Test
+    public void maxSumWithRequiredLengthShouldFailIfRequiredLengthBiggerThanArray() {
+        int[] arr = {3, -4, 5};
+
+        assertThatThrownBy(() -> maxSumWithRequiredLength(arr, 4))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("arr.length < minLength: 3 < 4");
+    }
+
+    @Test
+    public void maxSumWithRequiredLengthZeroMinLength() {
+        int[] arr = {3, -4, -5, 8, 6, -2, -4, -1, 6, -3};
+        assertThat(maxSumWithRequiredLength(arr, 0)).isEqualTo(14L);
+    }
+
+    @Test
+    public void maxSumWithRequiredLengthFullArray() {
+        int[] arr = {3, -4, -5, 8, 6, -2, -4, -1, 6, -3};
+        assertThat(maxSumWithRequiredLength(arr, arr.length)).
+                isEqualTo(Arrays.stream(arr).asLongStream().sum());
+    }
 
     @Test
     public void findMaxSumWrappingNormalCase() {
