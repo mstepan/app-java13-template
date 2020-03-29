@@ -2,6 +2,7 @@ package com.max.app.erickson.dynamic;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -101,18 +102,14 @@ public final class MaxSubarray {
      * space: O(L)
      */
     public static long maxSumWithRequiredLength(int[] arr, int minLength) {
-        checkArgument(arr != null, "null 'arr' argument passed");
-        checkArgument(arr.length >= minLength, "arr.length < minLength: %s < %s", arr.length, minLength);
+        checkMinRequiredLengthPreconditions(arr, minLength);
 
-        if (minLength == 0) {
-            // minLength is zero, so no restrictions on length, use standard algorithm
-            return findMaxSum(arr);
-        }
+        return findMinRequiredLengthSolutionForCornerCases(arr, minLength).
+                orElseGet(() -> maxSumWithRequiredLengthNormalCase(arr, minLength));
 
-        if (arr.length == minLength) {
-            return Arrays.stream(arr).asLongStream().sum();
-        }
+    }
 
+    private static long maxSumWithRequiredLengthNormalCase(int[] arr, int minLength) {
         long maxSoFar = Long.MIN_VALUE;
         long[] prevPrefix = createEmptyPrefixArray(minLength);
 
@@ -131,6 +128,60 @@ public final class MaxSubarray {
 
         return maxSoFar;
     }
+
+    /**
+     * Max subarray sum with min required length using bruteforce approach.
+     * <p>
+     * time: O(N^2)
+     * space: O(1)
+     */
+    public static long maxSumWithRequiredLengthBruteforce(int[] arr, int minLength) {
+        checkMinRequiredLengthPreconditions(arr, minLength);
+
+        return findMinRequiredLengthSolutionForCornerCases(arr, minLength).
+                orElseGet(() -> maxSumWithRequiredLengthBruteforceNormalCase(arr, minLength));
+    }
+
+
+    private static long maxSumWithRequiredLengthBruteforceNormalCase(int[] arr, int minLength) {
+
+        long maxSoFar = Long.MIN_VALUE;
+
+        for (int end = minLength - 1; end < arr.length; ++end) {
+            long cur = 0L;
+            int prefixLength = 0;
+
+            for(int i= end; i >=0; --i){
+                cur += arr[i];
+                ++prefixLength;
+
+                if( prefixLength >= minLength){
+                    maxSoFar = Math.max(maxSoFar, cur);
+                }
+            }
+        }
+
+        return maxSoFar;
+    }
+
+    private static void checkMinRequiredLengthPreconditions(int[] arr, int minLength) {
+        checkArgument(arr != null, "null 'arr' argument passed");
+        checkArgument(arr.length >= minLength, "arr.length < minLength: %s < %s", arr.length, minLength);
+    }
+
+    private static Optional<Long> findMinRequiredLengthSolutionForCornerCases(int[] arr, int minLength) {
+        if (minLength == 0) {
+            // minLength is zero, so no restrictions on length, use standard algorithm
+            return Optional.of(findMaxSum(arr));
+        }
+
+        if (arr.length == minLength) {
+            return Optional.of(Arrays.stream(arr).asLongStream().sum());
+        }
+
+        return Optional.empty();
+    }
+
 
     private static long[] createEmptyPrefixArray(int minLength) {
         long[] prefix = new long[minLength + 1];

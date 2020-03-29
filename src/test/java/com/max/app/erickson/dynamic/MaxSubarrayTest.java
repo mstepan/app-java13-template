@@ -12,11 +12,37 @@ import static com.max.app.erickson.dynamic.MaxSubarray.findMaxSum;
 import static com.max.app.erickson.dynamic.MaxSubarray.findMaxSumBruteforce;
 import static com.max.app.erickson.dynamic.MaxSubarray.findMaxSumWrapping;
 import static com.max.app.erickson.dynamic.MaxSubarray.maxSumWithRequiredLength;
+import static com.max.app.erickson.dynamic.MaxSubarray.maxSumWithRequiredLengthBruteforce;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 
 public class MaxSubarrayTest {
+
+    @Test
+    public void maxSumWithRequiredLengthDynamicComparedWithBruteforceRandomArrays() {
+        int[] arr = generateRandomArray(100);
+
+        for (int it = 0; it < 10; ++it) {
+            for (int i = 0; i < arr.length; ++i) {
+                assertThat(maxSumWithRequiredLengthBruteforce(arr, i))
+                        .as("dynamic programming value is different from bruteforce for random generated array")
+                        .isEqualTo(maxSumWithRequiredLength(arr, i));
+            }
+        }
+
+    }
+
+    @Test
+    public void maxSumWithRequiredLengthDynamicComparedWithBruteforce() {
+        int[] arr = {3, -4, -5, 8, 6, -2, -4, -1, 6, -3};
+
+        for (int i = 0; i < arr.length; ++i) {
+            assertThat(maxSumWithRequiredLengthBruteforce(arr, i))
+                    .as("dynamic programming value is different from bruteforce")
+                    .isEqualTo(maxSumWithRequiredLength(arr, i));
+        }
+    }
 
     @Test
     public void maxSumWithRequiredLengthNormalCase() {
