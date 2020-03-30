@@ -17,7 +17,7 @@ Java flight recorder JVM options:
 -XX:+DebugNonSafepoints
 -ea
 */
-public final class LongestCommonSubsequence {
+public final class LongestCommonSubsequenceBacktracking {
 
     public static String findLongestCommonSubsequence(String first, String second) {
 
