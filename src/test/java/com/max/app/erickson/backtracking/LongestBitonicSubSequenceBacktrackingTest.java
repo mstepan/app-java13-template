@@ -4,11 +4,11 @@ import org.junit.Test;
 
 import java.util.Random;
 
-import static com.max.app.erickson.backtracking.LongestBitonicSubSequence.find;
-import static com.max.app.erickson.backtracking.LongestBitonicSubSequence.findBruteforce;
+import static com.max.app.erickson.backtracking.LongestBitonicSubSequenceBacktracking.find;
+import static com.max.app.erickson.backtracking.LongestBitonicSubSequenceBacktracking.findBruteforce;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-public class LongestBitonicSubSequenceTest {
+public class LongestBitonicSubSequenceBacktrackingTest {
 
     private static final Random RAND = new Random();
 

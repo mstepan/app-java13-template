@@ -7,9 +7,9 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public final class LongestBitonicSubSequence {
+public final class LongestBitonicSubSequenceBacktracking {
 
-    private LongestBitonicSubSequence() {
+    private LongestBitonicSubSequenceBacktracking() {
         throw new IllegalStateException("Can't instantiate utility only class");
     }
 
