@@ -40,7 +40,7 @@ public final class Intrasort {
 
             // for a small subarray use insertion sort
             if (elemsCount <= INSERTION_SORT_THRESHOLD) {
-                InsertionSort.sort(arr, from, to);
+                FastInsertionSort.sort(arr, from, to);
                 continue;
             }
 
