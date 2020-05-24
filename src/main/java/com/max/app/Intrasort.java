@@ -40,7 +40,7 @@ public final class Intrasort {
 
             // for a small subarray use insertion sort
             if (elemsCount <= INSERTION_SORT_THRESHOLD) {
-                insertionSort(arr, from, to);
+                InsertionSort.insertionSort(arr, from, to);
                 continue;
             }
 
@@ -148,7 +148,6 @@ public final class Intrasort {
         }
     }
 
-
     private static int log2(int n) {
         return (int) (Math.log(n) / Math.log(2)) + 1;
     }
@@ -167,25 +166,6 @@ public final class Intrasort {
 
         swap(arr, boundary + 1, to);
         return boundary + 1;
-    }
-
-    private static void insertionSort(int[] arr, int from, int to) {
-        assert arr != null : "null 'arr' detected";
-
-        int temp;
-        for (int i = from + 1; i <= to; ++i) {
-
-            temp = arr[i];
-
-            int j = i - 1;
-
-            while (j >= 0 && arr[j] > temp) {
-                arr[j + 1] = arr[j];
-                --j;
-            }
-
-            arr[j + 1] = temp;
-        }
     }
 
     private static void swap(int[] arr, int from, int to) {
