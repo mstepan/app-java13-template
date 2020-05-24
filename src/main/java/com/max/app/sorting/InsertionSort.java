@@ -1,12 +1,12 @@
-package com.max.app;
+package com.max.app.sorting;
 
-public final class InsertionSort {
+final class InsertionSort {
 
     private InsertionSort() {
         throw new AssertionError("Can't instantiate utility only class");
     }
 
-    public static void insertionSort(int[] arr, int from, int to) {
+    static void sort(int[] arr, int from, int to) {
         assert arr != null : "null 'arr' detected";
 
         int temp;

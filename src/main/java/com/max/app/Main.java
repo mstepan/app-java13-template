@@ -1,6 +1,8 @@
 package com.max.app;
 
 
+import com.max.app.sorting.Intrasort;
+
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;

@@ -32,7 +32,7 @@ public final class ArrayUtils {
     /**
      * Swap two elements of array in-place.
      */
-    private static void swap(int[] arr, int from, int to) {
+    public static void swap(int[] arr, int from, int to) {
         if (from == to) {
             return;
         }
