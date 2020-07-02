@@ -139,19 +139,6 @@
             <version>0.2.5</version>
         </dependency>
 
-        <!-- mysql JDBC driver -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.12.1</version>
-        </dependency>
-
         <!-- Test dependencies -->
         <dependency>
             <groupId>junit</groupId>

@@ -1,4 +1,4 @@
-package com.max.app;
+package com.max.app.concurrency;
 
 public final class ThreadPoolSizeCalculatorMain {
 

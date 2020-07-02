@@ -1,4 +1,4 @@
-package com.max.app;
+package com.max.app.util;
 
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;

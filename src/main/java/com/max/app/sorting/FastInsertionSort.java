@@ -1,6 +1,6 @@
 package com.max.app.sorting;
 
-import com.max.app.ArrayUtils;
+import com.max.app.util.ArrayUtils;
 
 final class FastInsertionSort {
 
