@@ -3,6 +3,7 @@ package com.max.app.matching;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,22 +14,77 @@ public final class StableMatchingMain {
     public static void main(String[] args) throws Exception {
 
         Map<String, String[]> doctors = new HashMap<>();
-        doctors.put("q", new String[]{"A", "B", "C", "D"});
-        doctors.put("r", new String[]{"A", "D", "C", "B"});
-        doctors.put("s", new String[]{"B", "A", "C", "D"});
-        doctors.put("t", new String[]{"D", "B", "C", "A"});
+        doctors.put("Xavier", new String[]{"Boston", "Atlanta", "Chicago"});
+        doctors.put("Yolanda", new String[]{"Atlanta", "Boston", "Chicago"});
+        doctors.put("Zeus", new String[]{"Atlanta", "Boston", "Chicago"});
 
         Map<String, String[]> hospitals = new HashMap<>();
-        hospitals.put("A", new String[]{"t", "s", "r", "q"});
-        hospitals.put("B", new String[]{"r", "t", "q", "s"});
-        hospitals.put("C", new String[]{"t", "r", "s", "q"});
-        hospitals.put("D", new String[]{"s", "r", "q", "t"});
+        hospitals.put("Atlanta", new String[]{"Xavier", "Yolanda", "Zeus"});
+        hospitals.put("Boston", new String[]{"Yolanda", "Xavier", "Zeus"});
+        hospitals.put("Chicago", new String[]{"Xavier", "Yolanda", "Zeus"});
 
-        for (DoctorAndHospital singleMatch : findStableMatching(doctors, hospitals)) {
+        List<DoctorAndHospital> matching = findStableMatching(doctors, hospitals);
+
+        if (matching.isEmpty()) {
+            System.out.println("No stable matching exists");
+            return;
+        }
+
+        if (!isMatchingStable(matching, doctors, hospitals)) {
+            throw new IllegalStateException("Matching not stable");
+        }
+
+        for (DoctorAndHospital singleMatch : matching) {
             System.out.println(singleMatch);
         }
 
         System.out.printf("StableMatchingMain completed. java version: %s%n", System.getProperty("java.version"));
+    }
+
+    public static boolean isMatchingStable(List<DoctorAndHospital> matching, Map<String, String[]> doctors,
+                                           Map<String, String[]> hospitals) {
+
+        Map<String, String> hospitalToDoctor = new HashMap<>();
+        for (DoctorAndHospital singleMatching : matching) {
+            hospitalToDoctor.put(singleMatching.hospital, singleMatching.doctor);
+        }
+
+        for (DoctorAndHospital singleMatching : matching) {
+            String doctor = singleMatching.doctor;
+            String hospital = singleMatching.hospital;
+
+            String[] doctorPrefs = doctors.get(doctor);
+
+            for (int i = 0; i < doctorPrefs.length; ++i) {
+                if (doctorPrefs[i].equals(hospital)) {
+                    break;
+                }
+
+                String hospitalToCheck = doctorPrefs[i];
+
+                if (!isStableForHospital(doctor, hospitals.get(hospitalToCheck), hospitalToDoctor.get(hospitalToCheck))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private static boolean isStableForHospital(String doctorToCheck, String[] hospitalPrefs, String matchedDoctor) {
+
+        for (int i = 0; i < hospitalPrefs.length; ++i) {
+            if (doctorToCheck.equals(hospitalPrefs[i])) {
+                return false;
+            }
+
+            if (matchedDoctor.equals(hospitalPrefs[i])) {
+                break;
+            }
+
+        }
+
+        return true;
     }
 
     /**
@@ -53,7 +109,9 @@ public final class StableMatchingMain {
 
             String[] curHospitalPrefs = hospitals.get(unmatchedHospital.name);
 
-            for (int doctorIndex = unmatchedHospital.index; doctorIndex < curHospitalPrefs.length; ++doctorIndex) {
+            int doctorIndex = unmatchedHospital.index;
+
+            for (; doctorIndex < curHospitalPrefs.length; ++doctorIndex) {
                 String doctorToPropose = curHospitalPrefs[doctorIndex];
 
                 Proposition proposition = propose(unmatchedHospital.name, doctorMatchings.get(doctorToPropose),
@@ -61,26 +119,31 @@ public final class StableMatchingMain {
 
                 if (proposition.accepted) {
                     makeMatching(doctorMatchings, unmatchedHospital.name, doctorToPropose, doctors);
-                    if( proposition.rejectedHospital != null ) {
+                    if (proposition.rejectedHospital != null) {
                         addRejectedHospitalToQueue(hospitalNameToState.get(proposition.rejectedHospital),
                                                    proposition.rejectedHospital, hospitalsQueue);
                     }
                     break;
                 }
             }
+
+            if (doctorIndex == curHospitalPrefs.length) {
+                // can't find a match for a hospital, so stable matching is not possible here
+                return Collections.emptyList();
+            }
         }
 
         return combineAllMatchings(doctorMatchings);
     }
 
-    private static Proposition propose(String hospital, DoctorState doctorState, String[] doctorPrefs){
+    private static Proposition propose(String hospital, DoctorState doctorState, String[] doctorPrefs) {
 
-        if( doctorState == null ){
+        if (doctorState == null) {
             return Proposition.accept(null);
         }
 
-        for(int hospitalIndex = doctorState.index; hospitalIndex >=0; --hospitalIndex){
-            if( doctorPrefs[hospitalIndex].equals(hospital) ){
+        for (int hospitalIndex = doctorState.index; hospitalIndex >= 0; --hospitalIndex) {
+            if (doctorPrefs[hospitalIndex].equals(hospital)) {
                 return Proposition.accept(doctorState.acceptedHospital);
             }
         }
@@ -101,7 +164,7 @@ public final class StableMatchingMain {
         }
         else {
             DoctorState state = new DoctorState(doctor, hospital, findHospitalIndex(hospital, hospitalsForDoctor,
-                                                                            hospitalsForDoctor.length - 1));
+                                                                                    hospitalsForDoctor.length - 1));
             doctorMatchings.put(doctor, state);
         }
 
@@ -143,11 +206,11 @@ public final class StableMatchingMain {
         final boolean accepted;
         final String rejectedHospital;
 
-        static Proposition accept(String rejectedHospital){
+        static Proposition accept(String rejectedHospital) {
             return new Proposition(true, rejectedHospital);
         }
 
-        static Proposition reject(){
+        static Proposition reject() {
             return new Proposition(false, null);
         }
 
