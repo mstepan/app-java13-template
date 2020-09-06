@@ -17,7 +17,7 @@
         <java.version>13</java.version>
         <junit.version>4.12</junit.version>
         <mockito-version>2.21.0</mockito-version>
-        <mysql.version>5.1.48</mysql.version>
+        <mysql.version>8.0.16</mysql.version>
         <okhttp.version>4.3.0</okhttp.version>
         <rxjava.version>2.2.14</rxjava.version>
         <surefire.plugin.version>3.0.0-M4</surefire.plugin.version>
